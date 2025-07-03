@@ -5,6 +5,30 @@ use std::process::Command;
 use cmake::Config;
 
 fn main() {
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+
+    let is_prebuilt = match (target_os.as_str(), target_arch.as_str()) {
+        ("windows", "x86_64") => {
+            println!("cargo:rustc-link-search=native=bin/x86_64-windows");
+            println!("cargo:rustc-link-lib=static=psd");
+            println!("cargo:rustc-link-lib=static=image");
+            println!("cargo:rustc-link-lib=dylib=stdc++");
+            true
+        }
+        ("linux", "x86_64") => {
+            println!("cargo:rustc-link-search=native=bin/x86_64-linux");
+            println!("cargo:rustc-link-lib=static=psd");
+            println!("cargo:rustc-link-lib=static=image");
+            println!("cargo:rustc-link-lib=dylib=stdc++");
+            true
+        }
+        _ => false,
+    };
+    if is_prebuilt {
+        return;
+    }
+    println!("cargo:warning=building");
     let output_dir = env::var("OUT_DIR").unwrap();
     let source_dir = Path::new(&output_dir).join("psd-cpp");
 
