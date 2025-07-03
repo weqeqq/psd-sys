@@ -1,0 +1,11 @@
+[package]
+name = "psd-sys"
+version = "0.1.0"
+edition = "2024"
+authors = ["weqeqq <ggmodwear@gmail.com>"]
+description = "Rust ffi bindings for the psd-cpp library"
+license = "MIT"
+repository = "https://github.com/weqeqq/psd-sys"
+
+[build-dependencies]
+cmake = "0.1.54"
