@@ -18,7 +18,6 @@ unsafe extern "C" {
         row_count: c_uint,
         column_count: c_uint,
     ) -> psd_error;
-    pub fn psd_layer_set_image_from_file(layer: *mut psd_layer, path: *const c_char) -> psd_error;
 
     pub fn psd_layer_set_offset(layer: *mut psd_layer, x_offset: c_uint, y_offset: c_uint);
     pub fn psd_layer_get_top(layer: *const psd_layer) -> c_uint;
