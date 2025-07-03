@@ -11,10 +11,14 @@ fn main() {
     let is_prebuilt = match (target_os.as_str(), target_arch.as_str()) {
         ("windows", "x86_64") => {
             println!("cargo:rustc-link-search=native=bin/x86_64-windows");
+            println!("cargo:rustc-link-lib=dylib=cpmt");
+            println!("cargo:rustc-link-lib=dylib=msvcprt");
+            println!("cargo:rustc-link-lib=dylib=msvcrt");
             true
         }
         ("linux", "x86_64") => {
             println!("cargo:rustc-link-search=native=bin/x86_64-linux");
+            println!("cargo:rustc-link-lib=dylib=stdc++");
             true
         }
         _ => false,
@@ -25,7 +29,6 @@ fn main() {
         println!("cargo:rustc-link-lib=static=turbojpeg");
         println!("cargo:rustc-link-lib=static=jpeg");
         println!("cargo:rustc-link-lib=static=wuffs");
-        println!("cargo:rustc-link-lib=dylib=stdc++");
         return;
     }
     println!("cargo:warning=building");
