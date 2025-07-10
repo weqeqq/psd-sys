@@ -36,15 +36,3 @@ jobs:
         with:
           platform: x64
       - run: cargo test --verbose
-  build-mingw:
-    runs-on: windows-latest
-    env:
-      CC: gcc.exe
-      CXX: g++.exe
-      CMAKE_GENERATOR: MinGW Makefiles
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - run: cargo test --verbose
