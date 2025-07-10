@@ -9,6 +9,9 @@ on:
 jobs:
   build-msvc:
     runs-on: windows-latest
+    env:
+      CC: cl.exe
+      CXX: cl.exe
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
@@ -20,6 +23,9 @@ jobs:
       - run: cargo test --verbose
   build-clang:
     runs-on: windows-latest
+    env:
+      CC: clang.exe
+      CXX: clang++.exe
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
@@ -31,6 +37,9 @@ jobs:
       - run: cargo test --verbose
   build-mingw:
     runs-on: windows-latest
+    env:
+      CC: gcc.exe
+      CXX: g++.exe
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
