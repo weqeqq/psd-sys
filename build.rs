@@ -1,8 +1,6 @@
 use std::env;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
-
-use cmake::Config;
 
 fn main() {
     let output_dir = env::var("OUT_DIR").unwrap();
@@ -18,27 +16,37 @@ fn main() {
             .status()
             .expect("Failed to run git clone");
         assert!(status.success(), "git clone failed");
-        let status = Command::new("git")
+    }
+    env::set_current_dir(source_dir).unwrap();
+    assert!(
+        Command::new("cmake")
             .args(&[
-                "-C",
-                source_dir.to_str().unwrap(),
-                "checkout",
-                "91faaab05f29aa439b84fea4f3dcb6d7f2dcdb87",
+                "--preset",
+                "release",
+                format!("-DCMAKE_INSTALL_PREFIX={}", output_dir).as_str()
             ])
             .status()
-            .expect("Failed to run git checkout");
-        assert!(status.success(), "git checkout failed");
-    }
-    let destination = Config::new(&source_dir)
-        .define("BUILD_SHARED_LIBS", "OFF")
-        .build();
+            .unwrap()
+            .success(),
+        "huy"
+    );
+    assert!(
+        Command::new("cmake")
+            .args(&["--build", "--preset", "release", "--target", "install"])
+            .status()
+            .unwrap()
+            .success(),
+        "huy"
+    );
 
     println!(
         "cargo:rustc-link-search=native={}",
-        destination.join("lib").display()
+        PathBuf::from(output_dir).join("lib").display()
     );
     println!("cargo:rustc-link-lib=static=psd");
     println!("cargo:rustc-link-lib=static=file");
-    println!("cargo:rustc-link-lib=dylib=stdc++");
+    if env::var("CARGO_CFG_TARGET_OS").unwrap() != "windows" {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+    }
     println!("cargo:rerun-if-changed=build.rs");
 }
