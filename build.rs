@@ -39,7 +39,10 @@ fn main() {
     );
     println!("cargo:rustc-link-lib=static=psd");
     println!("cargo:rustc-link-lib=static=file");
-    if env::var("CARGO_CFG_TARGET_OS").unwrap() != "windows" {
+    if env::var("CARGO_CFG_TARGET_OS").unwrap() == "windows" {
+        println!("cargo:rustc-link-lib=dylib=msvcprt");
+        println!("cargo:rustc-link-lib=dylib=msvcrt");
+    } else {
         println!("cargo:rustc-link-lib=dylib=stdc++");
     }
     println!("cargo:rerun-if-changed=build.rs");
