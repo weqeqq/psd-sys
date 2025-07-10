@@ -29,9 +29,18 @@ fn main() {
             .expect("Failed to run git checkout");
         assert!(status.success(), "git checkout failed");
     }
-    let destination = Config::new(&source_dir)
-        .define("BUILD_SHARED_LIBS", "OFF")
-        .build();
+    let mut config = Config::new(&source_dir);
+    config.define("BUILD_SHARED_LIBS", "OFF");
+
+    if env::var("CARGO_CFG_TARGET_OS").unwrap() == "windows" {
+        if env::var("PROFILE").unwrap() == "debug" {
+            config.define("CMAKE_MSVC_RUNTIME_LIBRARY", "MultiThreadedDebugDLL"); // /MDd
+        } else {
+            config.define("CMAKE_MSVC_RUNTIME_LIBRARY", "MultiThreadedDLL"); // /MD
+        }
+    }
+
+    let destination = config.build();
 
     println!(
         "cargo:rustc-link-search=native={}",
@@ -40,12 +49,6 @@ fn main() {
     println!("cargo:rustc-link-lib=static=psd");
     println!("cargo:rustc-link-lib=static=file");
     if env::var("CARGO_CFG_TARGET_OS").unwrap() == "windows" {
-        if env::var("PROFILE").unwrap() == "debug" {
-            println!("cargo:rustc-link-lib=dylib=msvcprtd");
-        } else {
-            println!("cargo:rustc-link-lib=dylib=msvcprt");
-        }
-    } else {
         println!("cargo:rustc-link-lib=dylib=stdc++");
     }
     println!("cargo:rerun-if-changed=build.rs");
