@@ -26,6 +26,7 @@ jobs:
     env:
       CC: clang.exe
       CXX: clang++.exe
+      CMAKE_GENERATOR: Ninja
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
@@ -40,6 +41,7 @@ jobs:
     env:
       CC: gcc.exe
       CXX: g++.exe
+      CMAKE_GENERATOR: MinGW Makefiles
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
