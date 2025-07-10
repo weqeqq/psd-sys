@@ -12,13 +12,22 @@ fn main() {
         let status = Command::new("git")
             .args(&[
                 "clone",
-                "--depth=1",
                 "https://github.com/weqeqq/psd-cpp",
                 source_dir.to_str().unwrap(),
             ])
             .status()
             .expect("Failed to run git clone");
         assert!(status.success(), "git clone failed");
+        let status = Command::new("git")
+            .args(&[
+                "-C",
+                source_dir.to_str().unwrap(),
+                "checkout",
+                "91faaab05f29aa439b84fea4f3dcb6d7f2dcdb87",
+            ])
+            .status()
+            .expect("Failed to run git checkout");
+        assert!(status.success(), "git checkout failed");
     }
     let destination = Config::new(&source_dir)
         .define("BUILD_SHARED_LIBS", "OFF")
@@ -28,8 +37,8 @@ fn main() {
         "cargo:rustc-link-search=native={}",
         destination.join("lib").display()
     );
-    println!("cargo:warning={}", output_dir);
     println!("cargo:rustc-link-lib=static=psd");
+    println!("cargo:rustc-link-lib=static=file");
     println!("cargo:rustc-link-lib=dylib=stdc++");
     println!("cargo:rerun-if-changed=build.rs");
 }

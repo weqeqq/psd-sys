@@ -10,7 +10,7 @@ pub struct psd_group(c_void);
 
 unsafe extern "C" {
     pub fn psd_group_new(name: *const c_char) -> *mut psd_group;
-    pub fn psd_group_copy(group: *const psd_group) -> *mut psd_group;
+    pub fn psd_group_clone(group: *const psd_group) -> *mut psd_group;
     pub fn psd_group_delete(group: *mut psd_group);
 
     pub fn psd_group_push_layer(group: *mut psd_group, layer: *mut psd_layer) -> psd_error;
@@ -19,7 +19,7 @@ unsafe extern "C" {
     pub fn psd_group_get_name(group: *const psd_group) -> *const c_char;
     pub fn psd_group_set_name(group: *mut psd_group, name: *const c_char);
 
-    pub fn psd_group_is_empty(group: *const psd_group) -> c_int;
+    pub fn psd_group_empty(group: *const psd_group) -> c_int;
 }
 
 #[cfg(test)]
@@ -59,7 +59,7 @@ mod tests {
             let group = psd_group_new(CString::new("Group").unwrap().as_ptr());
             assert!(!group.is_null());
 
-            let copy = psd_group_copy(group);
+            let copy = psd_group_clone(group);
             assert!(!copy.is_null());
 
             psd_group_delete(group);
@@ -91,7 +91,7 @@ mod tests {
             let group = psd_group_new(CString::new("Group").unwrap().as_ptr());
             assert!(!group.is_null());
 
-            let empty = psd_group_is_empty(group);
+            let empty = psd_group_empty(group);
             assert_eq!(empty, 1);
 
             psd_group_delete(group);

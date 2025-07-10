@@ -16,8 +16,9 @@ pub struct psd_document(c_void);
 unsafe extern "C" {
     pub fn psd_document_new() -> *mut psd_document;
     pub fn psd_document_delete(document: *mut psd_document);
-    pub fn psd_document_copy(document: *const psd_document) -> *mut psd_document;
-    pub fn psd_document_save(document: *const psd_document, path: *const c_char) -> psd_error;
+    pub fn psd_document_clone(document: *const psd_document) -> *mut psd_document;
+    // pub fn psd_document_save(document: *const psd_document, path: *const c_char) -> psd_error;
+    pub fn psd_save(document: *const psd_document, path: *const c_char) -> psd_error;
     pub fn psd_document_push_layer(document: *mut psd_document, layer: *mut psd_layer)
     -> psd_error;
     pub fn psd_document_push_group(document: *mut psd_document, group: *mut psd_group)
@@ -61,7 +62,7 @@ mod tests {
         unsafe {
             let document = psd_document_new();
             assert!(!document.is_null());
-            let copy = psd_document_copy(document);
+            let copy = psd_document_clone(document);
             assert!(!copy.is_null());
             psd_document_delete(document);
             psd_document_delete(copy);
@@ -74,7 +75,7 @@ mod tests {
             assert!(!document.is_null());
             let layer = psd_layer_new(CString::new("Layer").unwrap().as_ptr());
             psd_document_push_layer(document, layer);
-            let error = psd_document_save(document, CString::new("output.psd").unwrap().as_ptr());
+            let error = psd_save(document, CString::new("output.psd").unwrap().as_ptr());
             assert_error(error);
             psd_document_delete(document);
             remove_file("output.psd").unwrap();

@@ -9,7 +9,7 @@ pub struct psd_layer(c_void);
 
 unsafe extern "C" {
     pub fn psd_layer_new(name: *const c_char) -> *mut psd_layer;
-    pub fn psd_layer_copy(psd_layer: *const psd_layer) -> *mut psd_layer;
+    pub fn psd_layer_clone(psd_layer: *const psd_layer) -> *mut psd_layer;
     pub fn psd_layer_delete(psd_layer: *mut psd_layer);
 
     pub fn psd_layer_set_image(
@@ -49,7 +49,7 @@ mod tests {
         unsafe {
             let layer = psd_layer_new(name.as_ptr());
             assert!(!layer.is_null());
-            let copy = psd_layer_copy(layer);
+            let copy = psd_layer_clone(layer);
             assert!(!copy.is_null());
             psd_layer_delete(layer);
             psd_layer_delete(copy);
