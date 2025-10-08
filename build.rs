@@ -53,5 +53,6 @@ fn main() {
             println!("cargo:rustc-link-lib=dylib=stdc++");
         }
     }
+    println!("cargo:rustc-link-lib=deflate");
     println!("cargo:rerun-if-changed=build.rs");
 }
