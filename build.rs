@@ -45,7 +45,8 @@ fn main() {
     );
     println!("cargo:rustc-link-lib=static=psd");
     println!("cargo:rustc-link-lib=static=file");
-    if env::var("CARGO_CFG_TARGET_OS").unwrap() != "windows" {
+    let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+    if target_os != "windows" {
         if target_os == "macos" {
             println!("cargo:rustc-link-lib=dylib=c++");
         }else {
